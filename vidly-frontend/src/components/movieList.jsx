@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
-import Like from "./likeComponent";
-import Pagination from "./pagination";
-import paginate from "../utils/paginate";
+import { getGenres } from "../services/fakeGenreService";
+import Pagination from "./common/pagination";
+import { paginate, genreFilter } from "../utils/movieFilter";
+import Movies from "./movies";
 class MovieList extends Component {
   pageSize = 4;
 
   state = {
     movies: getMovies(),
     currentPage: 1,
+    genres: getGenres(),
+    currentGenres: "",
   };
 
   handleDelete(id) {
@@ -27,11 +30,17 @@ class MovieList extends Component {
     this.setState({ currentPage: pageNumber });
   }
 
+  handleGenreChange(genreId) {
+    this.setState({ currentGenres: genreId || "", currentPage: 1 });
+  }
+
   render() {
-    const { length: count } = this.state.movies;
+
+    const genreFilteredMovies = genreFilter(this.state.movies, this.state.currentGenres);
+    const { length: count } = genreFilteredMovies;
 
     const movies = paginate(
-      this.state.movies,
+      genreFilteredMovies,
       this.state.currentPage,
       this.pageSize
     );
@@ -40,59 +49,46 @@ class MovieList extends Component {
     else {
       return (
         <React.Fragment>
-          <h6>{`Showing ${this.state.movies.length} movies from database`}</h6>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Genre</th>
-                <th>Stock</th>
-                <th>Rate</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {movies.map(
-                ({
-                  _id,
-                  title,
-                  genre,
-                  numberInStock,
-                  dailyRentalRate,
-                  liked,
-                }) => (
-                  <tr key={_id}>
-                    <td>{title}</td>
-                    <td>{genre.name}</td>
-                    <td>{numberInStock}</td>
-                    <td>{dailyRentalRate}</td>
-                    <td>
-                      {
-                        <Like
-                          isLiked={liked}
-                          onClick={() => this.handleLike(_id)}
-                        />
-                      }
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => this.handleDelete(_id)}
-                        className="btn btn-danger"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
-          <Pagination
-            count={count}
-            onPageChange={(pageNumber) => this.handlePageChange(pageNumber)}
-            pageSize={this.pageSize}
-            currentPage={this.state.currentPage}
-          />
+          <div className="row">
+            <div className="col-3">
+              <ul className="list-group">
+                <li
+                  className={`list-group-item ${
+                    this.state.currentGenres === "" ? "active" : ""
+                  }`}
+                  onClick={() => this.handleGenreChange()}
+                >
+                  All Generes
+                </li>
+                {this.state.genres.map(({ name, _id }) => (
+                  <li
+                    key={_id}
+                    className={`list-group-item ${
+                      this.state.currentGenres === _id ? "active" : ""
+                    }`}
+                    onClick={() => this.handleGenreChange(_id)}
+                  >
+                    {name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="col">
+              <Movies
+                movies={movies}
+                onLike={(_id) => this.handleLike(_id)}
+                onDelete={(_id) => this.handleDelete(_id)}
+              />
+
+              <Pagination
+                count={count}
+                onPageChange={(pageNumber) => this.handlePageChange(pageNumber)}
+                pageSize={this.pageSize}
+                currentPage={this.state.currentPage}
+              />
+            </div>
+          </div>
         </React.Fragment>
       );
     }
