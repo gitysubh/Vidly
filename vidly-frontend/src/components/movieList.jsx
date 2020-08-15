@@ -4,15 +4,26 @@ import { getGenres } from "../services/fakeGenreService";
 import Pagination from "./common/pagination";
 import { paginate, genreFilter } from "../utils/movieFilter";
 import Movies from "./movies";
+import ListGroup from "./common/lIstGroup.jsx";
+
 class MovieList extends Component {
   pageSize = 4;
 
   state = {
-    movies: getMovies(),
+    movies: [],
     currentPage: 1,
-    genres: getGenres(),
-    currentGenres: "",
+    genres: [],
+    currentGenre: undefined,
   };
+
+  componentDidMount() {
+    const genres = [{ _id: 0, name: "All Generes" }, ...getGenres()];
+    this.setState({
+      movies: getMovies(),
+      genres,
+      currentGenre: genres[0],
+    });
+  }
 
   handleDelete(id) {
     const movies = this.state.movies.filter(({ _id }) => _id !== id);
@@ -30,13 +41,20 @@ class MovieList extends Component {
     this.setState({ currentPage: pageNumber });
   }
 
-  handleGenreChange(genreId) {
-    this.setState({ currentGenres: genreId || "", currentPage: 1 });
+  handleGenreChange(genre) {
+    this.setState({
+      currentGenre: this.state.genres.filter(
+        (item) => item._id === genre._id
+      )[0],
+      currentPage: 1,
+    });
   }
 
   render() {
-
-    const genreFilteredMovies = genreFilter(this.state.movies, this.state.currentGenres);
+    const genreFilteredMovies = genreFilter(
+      this.state.movies,
+      this.state.currentGenre
+    );
     const { length: count } = genreFilteredMovies;
 
     const movies = paginate(
@@ -51,27 +69,13 @@ class MovieList extends Component {
         <React.Fragment>
           <div className="row">
             <div className="col-3">
-              <ul className="list-group">
-                <li
-                  className={`list-group-item ${
-                    this.state.currentGenres === "" ? "active" : ""
-                  }`}
-                  onClick={() => this.handleGenreChange()}
-                >
-                  All Generes
-                </li>
-                {this.state.genres.map(({ name, _id }) => (
-                  <li
-                    key={_id}
-                    className={`list-group-item ${
-                      this.state.currentGenres === _id ? "active" : ""
-                    }`}
-                    onClick={() => this.handleGenreChange(_id)}
-                  >
-                    {name}
-                  </li>
-                ))}
-              </ul>
+              <ListGroup
+                items={this.state.genres}
+                textProperty="name"
+                valueProperty="_id"
+                selectedItem={this.state.currentGenre}
+                onSelectItem={(id) => this.handleGenreChange(id)}
+              />
             </div>
 
             <div className="col">
