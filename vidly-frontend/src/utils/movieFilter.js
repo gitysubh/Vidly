@@ -10,3 +10,7 @@ export function genreFilter(movies, genre) {
     return movies.filter((movie) => movie.genre._id === genre._id);
   else return movies;
 }
+
+export function sortMovies(movies, path, order) {
+  return _.orderBy(movies, path, order);
+}

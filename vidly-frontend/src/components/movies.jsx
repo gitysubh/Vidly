@@ -3,17 +3,18 @@ import propTypes from "prop-types";
 
 import Like from "./common/likeComponent";
 
-const Movies = ({ movies, onLike, onDelete }) => {
+const Movies = ({ movies, onLike, onDelete, onSortRaise }) => {
   return (
     <React.Fragment>
       <h6>{`Showing ${movies.length} movies from database`}</h6>
       <table className="table">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Genre</th>
-            <th>Stock</th>
-            <th>Rate</th>
+            <th onClick={() =>onSortRaise("title")}>Title</th>
+            <th onClick={() =>onSortRaise("genre.name")}>Genre</th>
+            <th onClick={() =>onSortRaise("numberInStock")}>Stock</th>
+            <th onClick={() =>onSortRaise("dailyRentalRate")}>Rate</th>
+            <th></th>
             <th></th>
           </tr>
         </thead>

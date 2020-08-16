@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Pagination from "./common/pagination";
-import { paginate, genreFilter } from "../utils/movieFilter";
+import { paginate, genreFilter, sortMovies } from "../utils/movieFilter";
 import Movies from "./movies";
 import ListGroup from "./common/lIstGroup.jsx";
 
@@ -14,6 +14,7 @@ class MovieList extends Component {
     currentPage: 1,
     genres: [],
     currentGenre: undefined,
+    currentSort: { path: "title", order: "asc" },
   };
 
   componentDidMount() {
@@ -50,6 +51,16 @@ class MovieList extends Component {
     });
   }
 
+  handleSort(path) {
+    let { currentSort } = this.state;
+    if (currentSort.path === path) {
+      currentSort.order = currentSort.order === "asc" ? "desc" : "asc";
+    } else {
+      currentSort = { path, order: "asc" };
+    }
+    this.setState({ currentSort });
+  }
+
   render() {
     const genreFilteredMovies = genreFilter(
       this.state.movies,
@@ -58,7 +69,11 @@ class MovieList extends Component {
     const { length: count } = genreFilteredMovies;
 
     const movies = paginate(
-      genreFilteredMovies,
+      sortMovies(
+        genreFilteredMovies,
+        this.state.currentSort.path,
+        this.state.currentSort.order
+      ),
       this.state.currentPage,
       this.pageSize
     );
@@ -83,6 +98,9 @@ class MovieList extends Component {
                 movies={movies}
                 onLike={(_id) => this.handleLike(_id)}
                 onDelete={(_id) => this.handleDelete(_id)}
+                onSortRaise={(path) => {
+                  this.handleSort(path);
+                }}
               />
 
               <Pagination
