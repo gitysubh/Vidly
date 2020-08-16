@@ -1,6 +1,6 @@
 import React from "react";
-import TableHead from "./common/tableHead";
-import TableBody from "./common/tableBody";
+import TableHead from "./tableHead";
+import TableBody from "./tableBody";
 
 const Table = (props) => {
   const { columns, sortColumn, onSort, data } = props;
