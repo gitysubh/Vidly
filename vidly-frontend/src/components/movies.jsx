@@ -1,33 +1,44 @@
 import React, { Component } from "react";
 
 import Like from "./common/likeComponent";
+import TableHead from "./common/tableHead";
 
 class MoviesTable extends Component {
-  onRaiseSort(path) {
-    let { sortColumn } = this.props;
-    if (sortColumn.path === path) {
-      sortColumn.order = sortColumn.order === "asc" ? "desc" : "asc";
-    } else {
-      sortColumn = { path, order: "asc" };
-    }
-    this.props.onSort(sortColumn);
-  }
-
   render() {
+    const columns = [
+      {
+        path: "title",
+        name: "Title",
+      },
+      {
+        path: "genre.name",
+        name: "Genre",
+      },
+      {
+        path: "numberInStock",
+        name: "Stock",
+      },
+      {
+        path: "dailyRentalRate",
+        name: "Rate",
+      },
+      {
+        key: "like",
+      },
+      {
+        key: "delete",
+      },
+    ];
+
     return (
       <React.Fragment>
         <h6>{`Showing ${this.props.movies.length} movies from database`}</h6>
         <table className="table">
-          <thead>
-            <tr>
-              <th onClick={() => this.onRaiseSort("title")}>Title</th>
-              <th onClick={() => this.onRaiseSort("genre.name")}>Genre</th>
-              <th onClick={() => this.onRaiseSort("numberInStock")}>Stock</th>
-              <th onClick={() => this.onRaiseSort("dailyRentalRate")}>Rate</th>
-              <th></th>
-              <th></th>
-            </tr>
-          </thead>
+          <TableHead
+            columns={columns}
+            sortColumn={this.props.sortColumn}
+            onSort={this.props.onSort}
+          />
           <tbody>
             {this.props.movies.map(
               ({
@@ -44,7 +55,12 @@ class MoviesTable extends Component {
                   <td>{numberInStock}</td>
                   <td>{dailyRentalRate}</td>
                   <td>
-                    {<Like isLiked={liked} onClick={() => this.props.onLike(_id)} />}
+                    {
+                      <Like
+                        isLiked={liked}
+                        onClick={() => this.props.onLike(_id)}
+                      />
+                    }
                   </td>
                   <td>
                     <button
