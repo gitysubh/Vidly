@@ -89,11 +89,12 @@ class MovieList extends Component {
             </div>
 
             <div className="col">
+              <h6>{`Showing ${count} movies from database`}</h6>
               <MoviesTable
                 movies={movies}
                 onLike={(_id) => this.handleLike(_id)}
                 onDelete={(_id) => this.handleDelete(_id)}
-                sortColumn = {this.state.sortColumn}
+                sortColumn={this.state.sortColumn}
                 onSort={(sortColumn) => {
                   this.handleSort(sortColumn);
                 }}

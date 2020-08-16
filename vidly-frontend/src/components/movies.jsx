@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import Like from "./common/likeComponent";
-import TableHead from "./common/tableHead";
+import Table from "./common/table";
 
 class MoviesTable extends Component {
   render() {
@@ -24,57 +24,34 @@ class MoviesTable extends Component {
       },
       {
         key: "like",
+        content: (movie) => (
+          <Like
+            isLiked={movie.liked}
+            onClick={() => this.props.onLike(movie._id)}
+          />
+        ),
       },
       {
         key: "delete",
+        content: (movie) => (
+          <button
+            onClick={() => this.props.onDelete(movie._id)}
+            className="btn btn-danger"
+          >
+            Delete
+          </button>
+        ),
       },
     ];
 
     return (
       <React.Fragment>
-        <h6>{`Showing ${this.props.movies.length} movies from database`}</h6>
-        <table className="table">
-          <TableHead
-            columns={columns}
-            sortColumn={this.props.sortColumn}
-            onSort={this.props.onSort}
-          />
-          <tbody>
-            {this.props.movies.map(
-              ({
-                _id,
-                title,
-                genre,
-                numberInStock,
-                dailyRentalRate,
-                liked,
-              }) => (
-                <tr key={_id}>
-                  <td>{title}</td>
-                  <td>{genre.name}</td>
-                  <td>{numberInStock}</td>
-                  <td>{dailyRentalRate}</td>
-                  <td>
-                    {
-                      <Like
-                        isLiked={liked}
-                        onClick={() => this.props.onLike(_id)}
-                      />
-                    }
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => this.props.onDelete(_id)}
-                      className="btn btn-danger"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              )
-            )}
-          </tbody>
-        </table>
+        <Table
+          columns={columns}
+          sortColumn={this.props.sortColumn}
+          onSort={this.props.onSort}
+          data={this.props.movies}
+        />
       </React.Fragment>
     );
   }
