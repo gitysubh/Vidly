@@ -3,7 +3,7 @@ import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Pagination from "./common/pagination";
 import { paginate, genreFilter, sortMovies } from "../utils/movieFilter";
-import Movies from "./movies";
+import MoviesTable from "./movies";
 import ListGroup from "./common/lIstGroup.jsx";
 
 class MovieList extends Component {
@@ -14,7 +14,7 @@ class MovieList extends Component {
     currentPage: 1,
     genres: [],
     currentGenre: undefined,
-    currentSort: { path: "title", order: "asc" },
+    sortColumn: { path: "title", order: "asc" },
   };
 
   componentDidMount() {
@@ -51,14 +51,9 @@ class MovieList extends Component {
     });
   }
 
-  handleSort(path) {
-    let { currentSort } = this.state;
-    if (currentSort.path === path) {
-      currentSort.order = currentSort.order === "asc" ? "desc" : "asc";
-    } else {
-      currentSort = { path, order: "asc" };
-    }
-    this.setState({ currentSort });
+  handleSort(sortColumn) {
+    console.log(sortColumn);
+    this.setState({ sortColumn });
   }
 
   render() {
@@ -71,8 +66,8 @@ class MovieList extends Component {
     const movies = paginate(
       sortMovies(
         genreFilteredMovies,
-        this.state.currentSort.path,
-        this.state.currentSort.order
+        this.state.sortColumn.path,
+        this.state.sortColumn.order
       ),
       this.state.currentPage,
       this.pageSize
@@ -94,12 +89,13 @@ class MovieList extends Component {
             </div>
 
             <div className="col">
-              <Movies
+              <MoviesTable
                 movies={movies}
                 onLike={(_id) => this.handleLike(_id)}
                 onDelete={(_id) => this.handleDelete(_id)}
-                onSortRaise={(path) => {
-                  this.handleSort(path);
+                sortColumn = {this.state.sortColumn}
+                onSort={(sortColumn) => {
+                  this.handleSort(sortColumn);
                 }}
               />
 
