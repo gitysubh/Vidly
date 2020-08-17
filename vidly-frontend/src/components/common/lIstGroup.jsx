@@ -13,7 +13,7 @@ const ListGroup = ({
         return (
           <li
             key={item[valueProperty]}
-            className={`list-group-item ${
+            className={`list-group-item clickable ${
               selectedItem === item ? "active" : ""
             }`}
             onClick={() => onSelectItem(item)}
