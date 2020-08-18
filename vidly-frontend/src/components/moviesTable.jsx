@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import Like from "./common/likeComponent";
 import Table from "./common/table";
+import { Link } from "react-router-dom";
+
 
 class MoviesTable extends Component {
   render() {
@@ -9,6 +11,9 @@ class MoviesTable extends Component {
       {
         path: "title",
         name: "Title",
+        content: (movie) => (
+          <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+        ),
       },
       {
         path: "genre.name",
@@ -44,13 +49,13 @@ class MoviesTable extends Component {
       },
     ];
 
-    return (      
-        <Table
-          columns={columns}
-          sortColumn={this.props.sortColumn}
-          onSort={this.props.onSort}
-          data={this.props.movies}
-        />
+    return (
+      <Table
+        columns={columns}
+        sortColumn={this.props.sortColumn}
+        onSort={this.props.onSort}
+        data={this.props.movies}
+      />
     );
   }
 }

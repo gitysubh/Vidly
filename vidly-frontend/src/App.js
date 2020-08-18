@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import Movies from "./components/movies";
 import Navbar from "./components/common/navbar";
+import MoviesForm from "./components/movieForm";
 
 function App() {
   return (
@@ -11,10 +12,7 @@ function App() {
       <Navbar />
       <main className="container">
         <Switch>
-          <Route
-            path="/movies/:id"
-            render={(props) => <h1>Movies Id {'->'} {props.match.params.id}</h1>}
-          />
+          <Route path="/movies/:id" component={MoviesForm} />
           <Route path="/movies" component={Movies} />
           <Route path="/customers" render={() => <h1>Customers</h1>} />
           <Route path="/Rental" render={() => <h1>Rental</h1>} />
