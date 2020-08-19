@@ -7,6 +7,7 @@ const Input = ({
   value,
   errorText,
   onChange,
+  validator
 }) => {
   return (
     <div className="form-group">
@@ -16,9 +17,10 @@ const Input = ({
         id={name}
         value={value}
         type={type || "text"}
-        className="form-control"
+        className={`form-control ${errorText ? "is-invalid" : ""}`}
         placeholder={placeholder}
         onChange={onChange}
+        onBlur={validator}
       />
       <small className="invalid-feedback">{errorText}</small>
     </div>
