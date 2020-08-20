@@ -52,7 +52,6 @@ class Movies extends Component {
   }
 
   handleSort(sortColumn) {
-    console.log(sortColumn);
     this.setState({ sortColumn });
   }
 
@@ -94,6 +93,7 @@ class Movies extends Component {
             </div>
 
             <div className="col">
+              <button className="btn btn-primary mb-3" onClick={()=>this.props.history.push('/movies/new')}>New Movie</button>
               <h6>{`Showing ${totalCount} movies from database`}</h6>
               <MoviesTable
                 movies={movies}
