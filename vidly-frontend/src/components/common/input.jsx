@@ -1,26 +1,13 @@
 import React from "react";
-const Input = ({
-  label,
-  name,
-  type,
-  placeholder,
-  value,
-  errorText,
-  onChange,
-  validator
-}) => {
+const Input = ({ name, errorText, label, ...others }) => {
   return (
     <div className="form-group">
       <label htmlFor={name}>{label}</label>
       <input
         name={name}
         id={name}
-        value={value}
-        type={type || "text"}
         className={`form-control ${errorText ? "is-invalid" : ""}`}
-        placeholder={placeholder}
-        onChange={onChange}
-        onBlur={validator}
+        {...others}
       />
       <small className="invalid-feedback">{errorText}</small>
     </div>

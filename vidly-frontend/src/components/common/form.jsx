@@ -59,7 +59,6 @@ class Form extends Component {
 
   renderInput({ name, label, type = "text", placeholder, ...rest }) {
     const { data, errors } = this.state;
-
     return (
       <Input
         label={label}
@@ -68,8 +67,9 @@ class Form extends Component {
         onChange={this.handleChange}
         errorText={errors[name]}
         placeholder={placeholder}
-        validator={this.validateField}
-        rest
+        onBlur={this.validateField}
+        type = {type || "text"}
+        {...rest}
       />
     );
   }
