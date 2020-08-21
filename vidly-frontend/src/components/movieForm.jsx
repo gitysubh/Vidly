@@ -4,9 +4,20 @@ import { getMovie, saveMovie } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 
 import Form from "./common/form";
-import Select from "./common/select";
 class MoviesForm extends Form {
+  state = {
+    data: {
+      title: "",
+      numberInStock: "",
+      dailyRentalRate: "",
+      genreId: "",
+    },
+    errors: {},
+    genres: [],
+  };
+
   schema = {
+    _id: Joi.string(),
     title: Joi.string().required().label("Title"),
     numberInStock: Joi.number()
       .min(0)
@@ -14,36 +25,24 @@ class MoviesForm extends Form {
       .required()
       .label("Number In Stock"),
     dailyRentalRate: Joi.number().min(0).max(10).required().label("Rate"),
-    genre: Joi.object()
-      .keys({
-        _id: Joi.string().required(),
-        name: Joi.string().required(),
-      })
-      .required(),
-    _id: Joi.string(),
-    liked: Joi.boolean().default(false),
+    genreId: Joi.string().required(),
   };
 
   componentDidMount() {
-    const { params } = this.props.match;
-    if (!params.id) {
-      this.redirectNotFound();
-    } else if (params.id.toLowerCase() === "new") {
-      this.state.data = {};
-    } else {
-      const movie = this.getMovieFromDataBase(params.id);
-      if (!movie) {
-        this.redirectNotFound();
-      } else this.setState({ data: movie });
-    }
-  }
+    this.setState({ genres: getGenres() });
 
-  handleSave(id) {
-    this.props.history.push("/");
+    const { params } = this.props.match;
+
+    if (params.id.toLowerCase() === "new") return;
+
+    const movie = this.getMovieFromDataBase(params.id);
+    if (!movie) {
+      this.redirectNotFound();
+    } else this.setState({ data: this.mapToViewModel(movie) });
   }
 
   redirectNotFound() {
-    this.props.history.push("/404");
+    this.props.history.replace("/404");
   }
 
   getMovieFromDataBase(id) {
@@ -52,15 +51,23 @@ class MoviesForm extends Form {
   }
 
   doSubmit() {
-    console.log(this.state.data);
+    saveMovie(this.state.data);
     this.props.history.push("/");
   }
 
-  handleGenreChange = (e) => {
-    const { value } = e.target;
-  };
+  mapToViewModel(data) {
+    return {
+      _id: data._id,
+      title: data.title,
+      numberInStock: data.numberInStock,
+      dailyRentalRate: data.dailyRentalRate,
+      genreId: data.genre._id,
+    };
+  }
 
   render() {
+    const { genres } = this.state;
+
     return (
       <div>
         <h1>Movie Form</h1>
@@ -70,19 +77,11 @@ class MoviesForm extends Form {
             label: "Title",
           })}
 
-          <Select
-            name="genre"
-            label="Genre"
-            selectedItem=""
-            onChange={this.handleGenreChange}
-            options={getGenres().map((genre) => ({
-              value: genre._id,
-              label: genre.name,
-            }))}
-            selectedItem={
-              this.state.data.genre ? this.state.data.genre._id : ""
-            }
-          />
+          {this.renderSelect({
+            name: "genreId",
+            label: "Genre",
+            options: genres.map((g) => ({ label: g.name, value: g._id })),
+          })}
 
           {this.renderInput({
             name: "numberInStock",
@@ -95,7 +94,7 @@ class MoviesForm extends Form {
             type: "number",
           })}
 
-          {/* {this.renderSubmitButton("Save")} */}
+          {this.renderSubmitButton("Save")}
         </form>
       </div>
     );
