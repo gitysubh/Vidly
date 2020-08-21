@@ -14,3 +14,10 @@ export function genreFilter(movies, genre) {
 export function sortMovies(movies, path, order) {
   return _.orderBy(movies, path, order);
 }
+
+export function searchFilter(movies, query) {
+  const result = _.filter(movies, (m) =>
+    m.title.toLowerCase().includes(query.toLowerCase())
+  );
+  return result;
+}
