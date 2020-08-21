@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getMovies } from "../services/fakeMovieService";
+import { getMovies, deleteMovie } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Pagination from "./common/pagination";
 import { paginate, genreFilter, sortMovies } from "../utils/movieFilter";
@@ -28,6 +28,7 @@ class Movies extends Component {
 
   handleDelete(id) {
     const movies = this.state.movies.filter(({ _id }) => _id !== id);
+    deleteMovie(id);
     this.setState({ movies });
   }
 
@@ -93,7 +94,12 @@ class Movies extends Component {
             </div>
 
             <div className="col">
-              <button className="btn btn-primary mb-3" onClick={()=>this.props.history.push('/movies/new')}>New Movie</button>
+              <button
+                className="btn btn-primary mb-3"
+                onClick={() => this.props.history.push("/movies/new")}
+              >
+                New Movie
+              </button>
               <h6>{`Showing ${totalCount} movies from database`}</h6>
               <MoviesTable
                 movies={movies}

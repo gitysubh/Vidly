@@ -88,6 +88,7 @@ class MoviesForm extends Form {
             label: "Number In Stock",
             type: "number",
           })}
+          
           {this.renderInput({
             name: "dailyRentalRate",
             label: "DailyRentalRate",
