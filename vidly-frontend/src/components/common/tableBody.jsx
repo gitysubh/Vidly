@@ -32,26 +32,3 @@ class TableBody extends Component {
 }
 
 export default TableBody;
-
-{
-  /* <td>{title}</td>
-              <td>{genre.name}</td>
-              <td>{numberInStock}</td>
-              <td>{dailyRentalRate}</td>
-              <td>
-                {
-                  <Like
-                    isLiked={liked}
-                    onClick={() => this.props.onLike(_id)}
-                  />
-                }
-              </td>
-              <td>
-                <button
-                  onClick={() => this.props.onDelete(_id)}
-                  className="btn btn-danger"
-                >
-                  Delete
-                </button>
-              </td> */
-}

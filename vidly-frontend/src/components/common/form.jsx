@@ -36,7 +36,7 @@ class Form extends Component {
     if (!validatorErrors) return null;
 
     let errors = {};
-    validatorErrors.details.map((errorItem) => {
+    validatorErrors.details.forEach((errorItem) => {
       if (errors.hasOwnProperty(errorItem.path[0])) return;
       errors = { ...errors, ...{ [errorItem.path[0]]: errorItem.message } };
     });

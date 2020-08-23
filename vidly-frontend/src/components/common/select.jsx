@@ -8,7 +8,6 @@ const Select = ({ label, name, options = [], selectedItem,errorText, ...others }
         name={name}
         id={name}
         className={`form-control ${errorText ? "is-invalid" : ""}`}
-        id="exampleFormControlSelect1"
         {...others}
         value={selectedItem}
       >
