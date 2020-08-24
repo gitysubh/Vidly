@@ -17,13 +17,13 @@ class Form extends Component {
     this.setState({ data, errors });
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
     const errors = this.validateForm();
     if (errors && Object.keys(errors).length) {
       this.setState({ errors: errors || {} });
       return;
-    } else this.doSubmit();
+    } else await this.doSubmit();
   };
 
   validateForm = (e) => {
@@ -75,7 +75,7 @@ class Form extends Component {
     );
   }
 
-  renderSelect({name, label, ...others}) {
+  renderSelect({ name, label, ...others }) {
     const { data, errors } = this.state;
     return (
       <Select

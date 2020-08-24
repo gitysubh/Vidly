@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { getMovies, deleteMovie } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
+import {toast} from "react-toastify";
+import { getMovies, deleteMovie } from "../services/movieService";
+import { getGenres } from "../services/genreService";
 import Pagination from "./common/pagination";
 import {
   paginate,
@@ -25,19 +26,31 @@ class Movies extends Component {
     searchQuery: "",
   };
 
-  componentDidMount() {
-    const genres = [this.allGenreObj, ...getGenres()];
+  async componentDidMount() {
+    const { data: genres } = await getGenres();
+    const { data: movies } = await getMovies();
+
     this.setState({
-      movies: getMovies(),
-      genres,
-      currentGenre: genres[0],
+      movies,
+      genres: [this.allGenreObj, ...genres],
+      currentGenre: this.allGenreObj,
     });
+    console.log(this.state);
   }
 
-  handleDelete(id) {
-    const movies = this.state.movies.filter(({ _id }) => _id !== id);
-    deleteMovie(id);
+  async handleDelete(id) {
+    const originalState = this.state;
+    const movies = originalState.movies.filter(({ _id }) => _id !== id);
     this.setState({ movies });
+
+    try {
+      await deleteMovie(id);
+    } catch (err) {
+      if (err.response && err.response === 404) {
+        toast.error("This movie hasbeen deleted");
+      }
+      this.setState(originalState);
+    }
   }
 
   handleLike(id) {

@@ -10,7 +10,7 @@ class Register extends Form {
     name: Joi.string().required().label("Password")
   };
 
-  doSubmit() {
+  async doSubmit() {
     alert("success");
   }
 

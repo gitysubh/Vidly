@@ -1,7 +1,9 @@
 import React from "react";
 import Joi from "joi-browser";
-import { getMovie, saveMovie } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
+import { toast } from "react-toastify";
+
+import { getMovie, saveMovie } from "../services/movieService";
+import { getGenres } from "../services/genreService";
 
 import Form from "./common/form";
 class MoviesForm extends Form {
@@ -28,30 +30,41 @@ class MoviesForm extends Form {
     genreId: Joi.string().required(),
   };
 
-  componentDidMount() {
-    this.setState({ genres: getGenres() });
+  async componentDidMount() {
+    await this.populateGenres();
+    await this.populateMovies();
+  }
 
-    const { params } = this.props.match;
+  async populateGenres() {
+    try {
+      const { data: genres } = await getGenres();
+      this.setState({ genres });
+    } catch (e) {
+      toast.error("Unable to get genres");
+    }
+  }
 
-    if (params.id.toLowerCase() === "new") return;
-
-    const movie = this.getMovieFromDataBase(params.id);
-    if (!movie) {
+  async populateMovies() {
+    try {
+      const { params } = this.props.match;
+      if (params.id.toLowerCase() === "new") return;
+      const { data: movie } = await getMovie(params.id);
+      if (movie) this.setState({ data: this.mapToViewModel(movie) });
+    } catch (error) {
       this.redirectNotFound();
-    } else this.setState({ data: this.mapToViewModel(movie) });
+    }
   }
 
   redirectNotFound() {
     this.props.history.replace("/404");
   }
 
-  getMovieFromDataBase(id) {
-    if (id) return getMovie(id);
-    else return null;
-  }
-
-  doSubmit() {
-    saveMovie(this.state.data);
+  async doSubmit() {
+    try {
+      await saveMovie(this.state.data);
+    } catch (error) {
+      toast.error("Unable to save movie");
+    }
     this.props.history.push("/");
   }
 
@@ -88,7 +101,7 @@ class MoviesForm extends Form {
             label: "Number In Stock",
             type: "number",
           })}
-          
+
           {this.renderInput({
             name: "dailyRentalRate",
             label: "DailyRentalRate",
