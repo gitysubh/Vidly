@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import { getMovies, deleteMovie } from "../services/movieService";
 import { getGenres } from "../services/genreService";
+import auth from "../services/authService";
 import Pagination from "./common/pagination";
 import {
   paginate,
@@ -114,6 +115,7 @@ class Movies extends Component {
   render() {
     const { totalCount, movies } = this.getPagedData();
     const { searchQuery } = this.state;
+    const user = auth.getCurrentUser();
 
     if (this.state.movies < 1) return <p>No movies are available currently</p>;
     else {
@@ -131,12 +133,14 @@ class Movies extends Component {
             </div>
 
             <div className="col">
-              <button
-                className="btn btn-primary mb-3"
-                onClick={() => this.props.history.push("/movies/new")}
-              >
-                New Movie
-              </button>
+              {user && user.isAdmin && (
+                <button
+                  className="btn btn-primary mb-3"
+                  onClick={() => this.props.history.push("/movies/new")}
+                >
+                  New Movie
+                </button>
+              )}
               <h6>{`Showing ${totalCount} movies from database`}</h6>
 
               <Input
