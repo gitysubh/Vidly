@@ -1,15 +1,33 @@
 import React from "react";
 import Joi from "joi-browser";
+import { toast } from "react-toastify";
 import Form from "./common/form";
+import * as auth from "../services/authService";
 
 class Login extends Form {
   schema = {
     email: Joi.string().email().required().label("Email"),
-    password: Joi.string().required().min(6).max(16).label("Password"),
+    password: Joi.string().required().min(5).max(16).label("Password"),
   };
 
-  doSubmit() {
-    alert("success");
+  async doSubmit() {
+    try {
+      const response = await auth.login(
+        this.state.data.email,
+        this.state.data.password
+      );
+      if (response.data) {
+        auth.setToken(response.data);
+        this.props.history.push("/");
+      }
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        const errors = { ...this.state.errors, email: ex.response.data };
+        this.setState({ errors: errors });
+      } else {
+        toast.error("Something went wrong");
+      }
+    }
   }
 
   render() {
