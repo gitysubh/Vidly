@@ -1,4 +1,5 @@
 import http from "./httpService";
+import jwtDecode from "jwt-decode";
 
 const tokenKey = "auth";
 const apiEndpoint = "/auth";
@@ -23,8 +24,18 @@ export function logout() {
   localStorage.removeItem(tokenKey);
 }
 
+export function getCurrentUser() {
+  try {
+    const jwt = localStorage.getItem(tokenKey);
+    return jwtDecode(jwt);
+  } catch (error) {
+    return null;
+  }
+}
+
 export default {
   login,
   logout,
   loginWithJwt,
+  getCurrentUser,
 };
