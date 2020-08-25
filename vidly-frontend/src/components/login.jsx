@@ -2,7 +2,7 @@ import React from "react";
 import Joi from "joi-browser";
 import { toast } from "react-toastify";
 import Form from "./common/form";
-import * as auth from "../services/authService";
+import auth from "../services/authService";
 
 class Login extends Form {
   schema = {
@@ -12,14 +12,9 @@ class Login extends Form {
 
   async doSubmit() {
     try {
-      const response = await auth.login(
-        this.state.data.email,
-        this.state.data.password
-      );
-      if (response.data) {
-        auth.setToken(response.data);
-        this.props.history.push("/");
-      }
+      const { email, password } = this.state.data;
+      await auth.login(email, password);
+      window.location = "/";
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         const errors = { ...this.state.errors, email: ex.response.data };

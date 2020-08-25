@@ -1,9 +1,10 @@
 import React from "react";
 import Joi from "joi-browser";
+import {toast} from "react-toastify";
 
 import Form from "./common/form";
 import * as userService from "../services/userService";
-import { setToken } from "../services/authService";
+import auth from "../services/authService";
 
 class Register extends Form {
   schema = {
@@ -14,18 +15,17 @@ class Register extends Form {
 
   async doSubmit() {
     try {
-      const response = await userService.register(this.state.data);
-      const { headers } = response;
+      const { headers } = await userService.register(this.state.data);
 
       if (headers && headers["x-auth-token"]) {
-        setToken(headers["x-auth-token"]);
-        this.props.history.push("/");
+        auth.loginWithJwt(headers["x-auth-token"]);
+        window.location = "/";
       }
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         const errors = { ...this.state.errors, email: ex.response.data };
         this.setState({ errors });
-      }
+      } else toast.error("Something went wrong");
     }
   }
 
