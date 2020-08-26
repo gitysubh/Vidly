@@ -5,17 +5,19 @@ import { func } from "prop-types";
 
 const ProtectedRoute = ({ role, ...others }) => {
   const user = auth.getCurrentUser();
-
   if (role === "admin" && user) {
-    return user.isAdmin ? (
-      getRoute({ ...others })
-    ) : (
-      <Redirect to={"/"} />
-    );
+    return user.isAdmin ? getRoute({ ...others }) : <Redirect to={"/"} />;
   } else if (!role && user) {
     return getRoute({ ...others });
   } else if (!user) {
-    return <Redirect to={"/login"} />;
+    return (
+      <Redirect
+        to={{
+          pathname: "/login",
+          state: { from: others.location.pathname },
+        }}
+      />
+    );
   }
 };
 

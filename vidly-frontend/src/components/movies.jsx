@@ -36,7 +36,6 @@ class Movies extends Component {
       genres: [this.allGenreObj, ...genres],
       currentGenre: this.allGenreObj,
     });
-    console.log(this.state);
   }
 
   async handleDelete(id) {

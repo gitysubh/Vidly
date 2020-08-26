@@ -14,7 +14,12 @@ class Login extends Form {
     try {
       const { email, password } = this.state.data;
       await auth.login(email, password);
-      window.location = "/";
+
+      const returnPath = this.props.location.state
+        ? this.props.location.state.from
+        : null;
+      console.log(returnPath);
+      window.location = returnPath ? returnPath : "/";
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         const errors = { ...this.state.errors, email: ex.response.data };
