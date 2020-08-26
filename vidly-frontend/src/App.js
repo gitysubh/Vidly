@@ -7,6 +7,7 @@ import MoviesForm from "./components/movieForm";
 import Login from "./components/login";
 import Register from "./components/register";
 import Logout from "./components/logout";
+import ProtectedRoute from "./components/common/protectedRoute";
 import auth from "./services/authService";
 
 class App extends Component {
@@ -24,7 +25,11 @@ class App extends Component {
         <main className="container">
           <Switch>
             <Route path="/register" component={Register} />
-            <Route path="/movies/:id" component={MoviesForm} />
+            <ProtectedRoute
+              path="/movies/:id"
+              component={MoviesForm}
+              role="admin"
+            />
             <Route path="/movies" component={Movies} />
             <Route path="/customers" render={() => <h1>Customers</h1>} />
             <Route path="/Rental" render={() => <h1>Rental</h1>} />

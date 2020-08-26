@@ -1,6 +1,5 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { func } from "prop-types";
 
 const baseURL = "http://localhost:3900/api";
 const instance = axios.create({ baseURL });
