@@ -6,15 +6,26 @@ import Table from "./common/table";
 import auth from "../services/authService";
 
 class MoviesTable extends Component {
+  deleteColumn = {
+    key: "delete",
+    content: (movie) => (
+      <button
+        onClick={() => this.props.onDelete(movie._id)}
+        className="btn btn-danger"
+      >
+        Delete
+      </button>
+    ),
+  };
+
   render() {
     const user = auth.getCurrentUser();
-    const isAdmin = user && user.isAdmin;
     const columns = [
       {
         path: "title",
         name: "Title",
         content: (movie) =>
-          isAdmin ? (
+          user && user.isAdmin ? (
             <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
           ) : (
             <span>{movie.title}</span>
@@ -41,21 +52,9 @@ class MoviesTable extends Component {
           />
         ),
       },
-      {
-        key: "delete",
-        content: (movie) =>
-          isAdmin ? (
-            <button
-              onClick={() => this.props.onDelete(movie._id)}
-              className="btn btn-danger"
-            >
-              Delete
-            </button>
-          ) : (
-            ""
-          ),
-      },
     ];
+
+    if (user && user.isAdmin) columns.push(this.deleteColumn);
 
     return (
       <Table
